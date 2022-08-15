@@ -1,123 +1,169 @@
-var square = (n, char) => {
-  let text;
-  for (let i = 0; i < n; i++) {
-    text = "";
-    for (let k = 0; k < n; k++) {
-      text += char;
+/**  ---- Agenda -----*/
+
+// Constantes
+var WORK_HOURS = [
+  "08:00 - 09:00",
+  "09:00 - 10:00",
+  "10:00 - 11:00",
+  "11:00 - 12:00",
+  "12:00 - 13:00",
+  "13:00 - 14:00",
+  "15:00 - 16:00",
+  "16:00 - 17:00",
+];
+
+// Datos
+var myTeam = [
+  {
+    name: "María",
+    availability: new Array(8).fill(true),
+  },
+  {
+    name: "Pedro",
+    availability: new Array(8).fill(true),
+  },
+  {
+    name: "Esther",
+    availability: new Array(8).fill(true),
+  },
+  {
+    name: "Marcos",
+    availability: new Array(8).fill(true),
+  },
+];
+
+function randomizedSchedule(team) {
+  for (let worker of team) {
+    for (let i in worker.availability) {
+      worker.availability[i] = Math.round(Math.random());
     }
-    console.log(text);
   }
-};
+}
 
-var squareWithBorder = (n, charBorder, charInner) => {
-  let text;
-  for (let i = 0; i < n; i++) {
-    text = "";
-    for (let k = 0; k < n; k++) {
-      text +=
-        k === 0 || k === n - 1 || i === 0 || i === n - 1
-          ? charBorder
-          : charInner;
-    }
-    console.log(text);
+function createSchedule(hours, availability, element) {
+  for (let i in hours) {
+    let spanElement = document.createElement("span");
+    spanElement.innerText = hours[i] + ": " + (availability[i] ? "Si" : "No");
+    element.appendChild(spanElement);
   }
-};
+}
 
-var squareDiagonalLR = (n, charDiagonal, charUp, charDown) => {
-  let text;
-  for (let i = 0; i < n; i++) {
-    text = "";
-    for (let k = 0; k < n; k++) {
-      text += k === i ? charDiagonal : i < k ? charUp : charDown;
-    }
-    console.log(text);
+function createWorker(hours, obj) {
+  for (let worker of obj) {
+    let fatherElement = document.createElement("div");
+    let title = document.createElement("span");
+    title.innerText = "Disponibilidad de " + worker.name;
+    fatherElement.setAttribute("class", "worker");
+    fatherElement.appendChild(title);
+    createSchedule(hours, worker.availability, fatherElement);
+    document.querySelector("#schedule").append(fatherElement);
   }
-};
+}
 
-var squareDiagonalRL = (n, charDiagonal, charUp, charDown) => {
-  let text;
-  for (let i = n - 1; i >= 0; i--) {
-    text = "";
-    for (let k = 0; k < n; k++) {
-      text += k === i ? charDiagonal : i > k ? charUp : charDown;
+function isFreeTime(hours, team) {
+  let freeTime;
+  for (let i in hours) {
+    freeTime = true;
+    for (let worker of team) {
+      freeTime = worker.availability[i] && freeTime;
     }
-    console.log(text);
+    if (freeTime) return "Hueco encontrado en el horario " + hours[i];
   }
-};
+  return "Lo siento. No hay hueco disponible en el equipo.";
+}
 
-var halfDiamond = (n, char) => {
-  let text;
-  for (let i = 0 ; i < n; i++) {
-    text = "";
-    for (let k = 0; k <= i; k++) {
-      text += char;
-    }
-    console.log(text);
+function printAvailability(hours, team) {
+  let fatherElement = document.querySelector(".footer");
+  let spanElement = document.createElement("span");
+  spanElement.innerText = isFreeTime(hours, team);
+  fatherElement.appendChild(spanElement);
+}
+
+randomizedSchedule(myTeam);
+createWorker(WORK_HOURS, myTeam);
+printAvailability(WORK_HOURS, myTeam);
+
+/** ----- Calculadora de cambio óptimo ----- */
+
+let currencies = [
+  { 200: 0 },
+  { 100: 0 },
+  { 50: 0 },
+  { 20: 0 },
+  { 10: 0 },
+  { 5: 0 },
+  { 2: 0 },
+  { 1: 0 },
+  { 0.5: 0 },
+  { 0.2: 0 },
+  { 0.1: 0 },
+  { 0.05: 0 },
+  { 0.02: 0 },
+  { 0.01: 0 },
+];
+
+function cashRegister(obj, nMoney) {
+  let fatherElement = document.createElement("div");
+  let element = document.createElement("input");
+  element.setAttribute("value", obj[nMoney]);
+  element.addEventListener(
+    "change",
+    (e) => (obj[nMoney] = e.target.valueAsNumber)
+  );
+  element.setAttribute("type", "number");
+  fatherElement.appendChild(element);
+  element = document.createElement("span");
+  element.innerText = nMoney + "€";
+  fatherElement.appendChild(element);
+  return fatherElement;
+}
+
+function printCashRegister(obj) {
+  let fatherElement = document.querySelector(".cashRegister");
+  for (let i in obj) {
+    fatherElement.appendChild(cashRegister(obj[i], Object.keys(obj[i])[0]));
   }
-  for(let j = n-1 ; j > 0; j--){
-    text = "";
-    for (let l = j; l > 0; l--) {
-      text += char;
+}
+
+function printChange(currency, n) {
+  let fatherElement = document.querySelector(".printCalculate");
+  let spanElement = document.createElement("span");
+  let billOrCoin = currency >= 5 ? "billete" : "moneda";
+  let oneOrMany = n > 1 ? "s" : "";
+  spanElement.innerText =
+    n + " " + billOrCoin + oneOrMany + " de " + currency + "€";
+  fatherElement.appendChild(spanElement);
+}
+
+function calculate(payment, amount, currency) {
+  let change = payment - amount;
+  let nCurrency, nMoney;
+  for (let i in currency) {
+    nMoney = parseFloat(Object.keys(currency[i])[0]);
+    if (currency[i][nMoney] !== 0) {
+      nCurrency = Math.floor(change / nMoney);
+      if (nCurrency >= 1) {
+        nCurrency = currency[i][nMoney] < nCurrency ? currency[i][nMoney] : nCurrency ;
+        change = change - nCurrency * nMoney;
+        printChange(nMoney, nCurrency);
+      }
+    } else {
+      console.log("No hay cambio");
     }
-    console.log(text);
   }
-};
+}
 
-var pyramid = (n, char) => {
-  let text;
-  for (let i = 0 ; i < n; i++) {
-    text = "";
-    for (let j = n-i-1; j > 0; j--) {
-      text += " ";
+function handleCalculate() {
+  let amount = document.querySelector("#totalAmount").valueAsNumber;
+  let payment = document.querySelector("#payment").valueAsNumber;
+  let printCalculate = document.querySelector(".printCalculate");
+  if (printCalculate.childElementCount > 1) {
+    for (let i = printCalculate.childElementCount; i > 1; i--) {
+      printCalculate.removeChild(printCalculate.lastChild);
     }
-    for (let k = n-i-1; k < n+i ; k++) {
-      text += char;
-    }
-    console.log(text);
   }
-};
+  calculate(payment, amount, currencies);
+}
 
-var diamond = (n, char) => {
-  let text;
-  for (let i = 0 ; i < n; i++) {
-    text = "";
-    for (let j = n-i-1; j > 0; j--) {
-      text += " ";
-    }
-    for (let k = n-i-1; k < n+i ; k++) {
-      text += char;
-    }
-    console.log(text);
-  }
-  for (let l = n-1 ; l > 0; l--) {
-    text = "";
-    for (let p = 0 ; p < n-l; p++) {
-      text += " ";
-    }
-    for (let b = n-l; b < n+l-1 ; b++) {
-      text += char;
-    }
-    console.log(text);
-  }
-};
-
-square(5, "*");
-console.log("");
-
-squareWithBorder(5, "B", "*");
-console.log("");
-
-squareDiagonalLR(5, "\\", "A", "B");
-console.log("");
-
-squareDiagonalRL(5, "/", "A", "B");
-console.log("");
-
-halfDiamond(5, "*");
-console.log("");
-
-pyramid(5, "*");
-console.log("");
-
-diamond(5, "*");
-console.log("");
+printCashRegister(currencies);
+document.querySelector("#calculate").addEventListener("click", handleCalculate);

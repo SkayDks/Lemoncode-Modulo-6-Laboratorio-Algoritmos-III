@@ -1,0 +1,104 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+  margin: 0 auto;
+  width: 70%;
+  min-width: 350px;
+  border: 1px solid black;
+  display: flex;
+  text-align: center;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  flex: 90%;
+  padding: 5px;
+  margin: 2px;
+  border: 1px solid black;
+}
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.title > h3 {
+  margin: 10px;
+  border-bottom: 1px solid black;
+}
+
+.footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 5px;
+}
+
+.worker {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 45%;
+  border: 1px solid black;
+  margin: 5px;
+}
+
+.worker span:first-child {
+  margin: 5px 0;
+  border-bottom: 1px solid black;
+}
+
+.amountAndPayment {
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: row;
+}
+
+.amountAndPayment > * {
+  margin: 2px;
+  flex: 50%;
+}
+
+#calculate {
+  margin: 5px;
+}
+
+.cashRegister {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid black;
+  margin-right: 20px  ;
+  margin-left: 5px;
+}
+
+.cashRegister > div {
+  display: flex;
+  justify-content: space-between;
+  margin-right: 10px;
+}
+
+.cashRegister input {
+  width: 37px;
+  padding: 0px;
+  margin: 1px 2px;
+}
+
+.printCalculate {
+  margin: 5px;
+  display: flex;
+  flex-direction: column;
+  flex: 3 1 0;
+}
+
+.printCalculate span {
+  margin: 2px;
+}
+
+.printCalculate span:first-child {
+  border-bottom: 1px solid black;
+}

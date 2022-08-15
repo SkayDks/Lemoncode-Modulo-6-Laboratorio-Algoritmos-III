@@ -1,12 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
+    <link rel="stylesheet" href="site.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="column">
+        <div class="title"><h3>Agenda</h3></div>
+        <div class="row" id="schedule"></div>
+        <div class="footer"></div>
+      </div>
+      <div class="column">
+        <div class="title"><h3>Calculadora de cambio óptimo</h3></div>
+        <div>
+          <div class="column">
+            <div class="amountAndPayment">
+              <span>Total a pagar</span>
+              <input type="number" id="totalAmount" />
+            </div>
+            <div class="amountAndPayment">
+              <span>Importe entregado</span>
+              <input type="number" id="payment" />
+            </div>
+            <button type="button" id="calculate">Calcular</button>
+          </div>
+          <div class="footer">
+            <div class="cashRegister"></div>
+            <div class="printCalculate">
+              <span>Cambio que devolver</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="app.js"></script>
-</body>
+  </body>
 </html>
